@@ -38,7 +38,7 @@ sub ok
 }
 
 ## check the version number
-ok 2, $Net::FileShare::VERSION eq '1.03';
+ok 2, $Net::FileShare::VERSION eq '1.04';
 
 ## create object for testing...
 my $object;

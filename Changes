@@ -13,4 +13,8 @@ Revision history for Perl extension Net::FileShare.
 	- tested the first installation of module as Net::FileShare
 
 1.03  Sat Jan 18 13:23:56 2003
-	- made additions to pod and updated the server_run_once and DESTROY_SELFsubs
+	- made additions to pod and updated the server_run_once and DESTROY_SELF subs
+
+1.04  Fri Jan 31 09:10:02 2003
+	- fixed the SYNOPSIS area in pod for FileShare.pm
+	- added error checking to the send_cmd() sub. This will check for invalid packet types from server and client, and if they exist, croak.

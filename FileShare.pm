@@ -9,7 +9,7 @@ use IO::Socket::INET;
 use Carp;
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.03';
+$VERSION = '1.04';
 
 use vars qw( @ISA @EXPORT );
 require Exporter;
@@ -400,9 +400,15 @@ my ($directory);
 			if ($self->{_debug} eq "1") {
 				print STDERR "\nSending Command: $cmd\nSending Data: $data\n";
 			}
+
+			## check for invalid packet type from server and clients. 
+			if ($self->{_send_only} eq "1") {
+				croak "Sending invalid packet type" if ($cmd eq $M_QUERY);
+			} elsif ($self->{_send_only} eq "0") {
+				croak "Sending invalid packet type" if (($cmd eq $M_ACK) or ($cmd eq $M_REJ));
+			} 
 			
 			my ($buf) = "$cmd,$data";
-
 			if (eval { $self->_send_packet($buf) }) {
 				return 'ok';
 			}
@@ -413,7 +419,14 @@ my ($directory);
 			## again, printing $cmd if debugging is set to 1
 			if ($self->{_debug} eq "1") {
 				print STDERR "\nSending Command: $cmd\n";
-			}			
+			}
+			
+			## check for invalid packet type from server and clients. 
+			if ($self->{_send_only} eq "1") {
+				croak "Sending invalid packet type" if ($cmd eq $M_QUERY);
+			} elsif ($self->{_send_only} eq "0") {
+				croak "Sending invalid packet type" if (($cmd eq $M_ACK) or ($cmd eq $M_REJ));
+			} 
 
 			if (eval { $self->_send_packet($buf) }) {
 				return 'ok';
@@ -430,7 +443,8 @@ __END__
 Net::FileShare - Object oriented interface for the creation of file sharing clients and servers
 
 =head1 SYNOPSIS
-	## the following is the source for constructing a file sharing server, using C<Net::FileShare>
+
+	## the following is the source for constructing a file sharing server
 	#!/usr/bin/perl -w
 	use strict;
 	use Net::FileShare;
@@ -462,10 +476,14 @@ C<Net::FileShare> uses a very basic ascii based protocol for communication betwe
 
 Only four options can be passed to the object you're creating. They are: _send_only, _socket, _directory, and _debug._send_only and _debug function similiar to bool variables. They use a 1/0 (on/off) mechanism. _send_only must be set for both clients and servers. This may seem very redundant, but I perfer to err on the side of security. _socket needs to be set to a scalar as it will become a ref to a socket object created with C<IO::Socket::INET>. _directory holds the dir path of where to look for files to serve, for the server, and where to files for the client. 
 
-After setting the previously mentioned four options, then execute the server_connection() sub or the client_connection() sub. The server_connection sub will take only one option, which is the port to bind to, if other than 3000. The client_connection() sub takes three options. These are the host(ie. IP x.x.x.x), port (3000 - by default) and file to request.  
+After setting the previously mentioned four options, then execute the server_connection() sub or the client_connection() sub. The server_connection sub will take only one optional argument, which is the port to bind to, if other than 3000. The client_connection() sub takes three options. These are the host(ie. IP x.x.x.x), port (3000 - by default) and file to request.  
+
+The communication between client and server is rather simple. A client connects to server, and begins by sending a query packet, containing the name of the file. The server will determine if the file exists, and if so, will return an acknowledgement packet along with the file size. The server and client will both open a file, the server opening the requested file and the client creating a new file with ".copy" appended to the name. The server will read the contents of the file and print them over the connection, while the client reads from the socket and prints to the file. The client will read from the socket until size specified by the server has been reached. 
+
+Currently servers created using C<Net::FileShare> can only handle one connection at a time, and transfer one file at a time. As of today, 01-24-03, work is being done to allow servers to handle multiple files/clients at a time. 
 
 =head1 AUTHOR
 
-Gene Gallistel, gravalo@uwm.edu
+Gene Gallistel, gravalo@uwm.edu, http://www.uwm.edu/~gravalo
 
 =cut

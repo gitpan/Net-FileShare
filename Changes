@@ -1,0 +1,16 @@
+Revision history for Perl extension Net::FileShare.
+
+1.00  Fri Jan 17 13:23:55 2003
+	- original version; created by h2xs 1.19
+
+1.01  Sat Jan 18 03:21:05 2003
+	- added server_run_once sub, for use in the testing process...
+	- fixed problem with the _recv_packet sub.
+	- worked on some more fun loving pod
+
+1.02  Sat Jan 18 13:06:05 2003
+	- added tests to distribution
+	- tested the first installation of module as Net::FileShare
+
+1.03  Sat Jan 18 13:23:56 2003
+	- made additions to pod and updated the server_run_once and DESTROY_SELFsubs

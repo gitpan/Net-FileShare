@@ -25,4 +25,17 @@ Revision history for Perl extension Net::FileShare.
 	- fixed problems in the server_run_one and DESTROY_SELF subs. I had over zelously used croak(), which was causing problems with my tests.
 	- Added a README file to the distribution.
 	- Added a TODO file to the distribution.
-	- Fixed area in client_connection sub, which takes a file_name. Instead of checking for a blank file by seeing if it's eq to " ", check lenght($file_name) eq 0. 
+	- Fixed area in client_connection sub, which takes a file_name. Instead of checking for a blank file by seeing if it's eq to " ", check lenght($file_name) eq 0.
+
+############################################################################################################################
+
+0.18 Fri Feb 28 23:42:00 2003
+	- Scrapped the initial code base. The previous implimentation of Net::FileShare.pm was flawed in both structure and style. So, over the last week I've completely rewritten Net::FileShare.pm from scratch. The changes to the initial implimentation are listed below.
+	- server_connection now has forking personality...so to say...
+	- new method rewritten, so users no longer need to enter all hash variables for object creation. Servers must specify _send_only and _directory only. Clients only need to specify _directory. Both should specify _debug, but it is not necessary. 
+	- two client personalities, an automated (similiar to the previous implimentation) and and interactive.
+	- clients now have the ability to request lists of files which are available...an oversight on my part in the previous implimentation.
+	- the mode of handling requests on the server side is now handled by a seperate subroutine (handle_request).
+	- for accuracy, I've switched all message passing and file transfer to use the C sys functions (sysread, syswrite)
+	- expansion of the protocol which clients and servers can communicate with. This allows for more descriptive messages if complications arise in the request process. 
+ 

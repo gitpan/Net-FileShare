@@ -1,0 +1,43 @@
+This is a readme file for Net::FileShare, a utility for creating file sharing clients and servers by Gene Gallistel <gravalo@uwm.edu>.
+
+* Installation
+
+Net::FileShare uses the standard Perl module install process:
+perl Makefile.PL
+make 
+make test
+make install
+
+* Usage
+
+Here is an example of a file sharing server:
+#!/usr/bin/perl -w
+use strict;
+use FileShare;
+
+my ($fh) = FileShare->new(_send_only => 1,
+			  _socket    => 1,
+			  _directory => '/path/to/files/to/serve',
+			  _debug     => 1);
+  $fh->server_connection;
+
+
+and here is an example of a file sharing client:
+#!/usr/bin/perl -w
+use strict;
+use FileShare;
+
+my ($fh) = FileShare->new(_send_only => 0,
+			  _socket    => 1,
+			  _directory => '/home/usr_id',
+			  _debug     => 1);
+  $fh->client_connection("x.x.x.x", "port", "some_file");
+
+ Unless a port is specified, the server_connection defaults to using port 3000. Just so you know.
+ Also, servers currently only handle one client, and one file transfer at a time. Check out the TODO file for info on further updates.
+
+* Copyright
+
+Copyright 2003 by Gene Gallistel <gravalo@uwm.edu>
+
+All rights reserved. You can redistribute and/or modify this bundle under the same terms as Perl itself.

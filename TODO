@@ -1,0 +1,4 @@
+Current TODOs for Net::FileShare are as follows
+	Tues 11 17:01:00 2003
+	- Need to correct the limitations of the server, namely allow it to fork off child processes for incoming clients, and handle multiple file transfers as well. This will involve some bandwidth throttling...fun stuff.
+	- When these changes are implimented, the client needs to be able to pass an array of files to the server to download. 

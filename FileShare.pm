@@ -2,14 +2,16 @@
 #
 # Net::FileShare.pm 		1-07-03
 # Gene Gallistel 		<gravalo@uwm.edu>
-# copyright (c) 1-07-03
+# Copyright (c) 1-07-03
+#
+# All rights reserved. You can redistribute and/or modify this bundle under the # same terms as Perl itself.
 #
 package Net::FileShare;
 use IO::Socket::INET;
 use Carp;
 use strict;
 use vars qw($VERSION);
-$VERSION = '1.04';
+$VERSION = '1.05';
 
 use vars qw( @ISA @EXPORT );
 require Exporter;
@@ -73,18 +75,15 @@ my ($directory);
 		my ($self) = shift;
 		undef %$self;
 		sleep 1;
-		croak "\nSELF has been DESTROYED...\n";
 	}
 
 	sub client_connection
 	{
-		my ($self, $server, $port, $file) = ($_[0], $_[1], $_[2], $_[3] || " ");
+		my ($self, $server, $port, $file_name) = ($_[0], $_[1], $_[2], $_[3] || "");
 		my ($file_size, $bytes_read, $data) = 0;
 
 		## client must send _send_only to 0, or false	
-		if ($self->{_send_only} ne "0") {
-			croak "\nClient must set _send_only option to 0";
-		}
+		croak "\nClient must set _send_only option to 0" if ($self->{_send_only} ne "0");
 
 		my ($socket) = IO::Socket::INET->new(
 						PeerAddr => $server,
@@ -102,12 +101,12 @@ my ($directory);
 		}
 
 		## check to confirm file name is not blank
-		if ($file eq " ") {
+		if (length($file_name) eq 0) {
 			croak "\nFile to download is not specified in client_connection.";
 		}
 	
 		## sending query and file name to the server
-		$self->send_cmd($M_QUERY, $file);
+		$self->send_cmd($M_QUERY, $file_name);
 
 		## declare the variables for listening to the server 
 		## and receiving a packet and filename from the server.		
@@ -123,7 +122,7 @@ my ($directory);
 		## print until file size has been reached...something 		
 		## like that
 			$file_size = $response;
-			open (OUTFILE, ">$directory/$file.copy") or croak "Cannot open file for writing: $!";
+			open (OUTFILE, ">$directory/$file_name.copy") or croak "Cannot open file for writing: $!";
 			
 			while (read($socket, $data, $file_size)) {
 				print OUTFILE $data;
@@ -139,7 +138,7 @@ my ($directory);
 			
 			## if everything goes well, up to this point, 
 			## file has been downloaded and is now closed.
-			print STDERR "\nDownloaded $file from server and saved it as, $file.copy.\n";
+			print STDERR "\nDownloaded $file_name from server and saved it as, $file_name.copy.\n";
 			sleep 1; ## sleep for one second
 			exit 0;  ## exit  
 		} else {
@@ -148,7 +147,6 @@ my ($directory);
 			## problem.
 			croak "\nUndetermined packet from server";
 		} 
-	   #return;
 	}
 
 	## Impliments a server connection 
@@ -268,8 +266,6 @@ my ($directory);
 			ReUse		=> 1,
 			Proto		=> 'tcp')
 		or croak "Cannot bind socket\n";
-
-		croak "server_run_once has completed its run\n";
 	}
 
 	## Read the list of files into the @_files array for later use.

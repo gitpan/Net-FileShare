@@ -2,4 +2,7 @@ Changes
 FileShare.pm
 Makefile.PL
 MANIFEST
+README
+TODO
+Test/Simple.pm
 test.pl

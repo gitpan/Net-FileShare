@@ -18,3 +18,11 @@ Revision history for Perl extension Net::FileShare.
 1.04  Fri Jan 31 09:10:02 2003
 	- fixed the SYNOPSIS area in pod for FileShare.pm
 	- added error checking to the send_cmd() sub. This will check for invalid packet types from server and client, and if they exist, croak.
+
+1.05 Tues Feb 11 17:00:03 2003
+	- fixed test.pl (the tests for the distro)
+	- bundled in Test::Simple to be used with test.pl
+	- fixed problems in the server_run_one and DESTROY_SELF subs. I had over zelously used croak(), which was causing problems with my tests.
+	- Added a README file to the distribution.
+	- Added a TODO file to the distribution.
+	- Fixed area in client_connection sub, which takes a file_name. Instead of checking for a blank file by seeing if it's eq to " ", check lenght($file_name) eq 0. 
